@@ -8,14 +8,14 @@ using namespace Students;
 using namespace Prog7;
 const std::string Names[] = { "Unknown", "Small", "Big" };
 const std::string Menu[] = { "1. Add a group", "2. Find a group",
-"3. Remove", "4. Show all", "5. Add student", "6. ShowStudents", "7. Add_Marks", "8. ShowMarks", "9. Average",
+"3. Remove", "4. Show all", "5. Add student", "6. ShowStudents", "7. Add_Marks", "8. ShowMarks", "9. Average","10. File_out",
  "0. Quit" },
 
 	Choice = "Make your choice",
 	Msg = "You are wrong; repeate please";
 int Answer(const std::string alt[], int n);
-int Add(Table &), Find(Table &), Remove(Table &), ShowAll(Table &), Add_Student(Table &), ShowStudents(Table &), Add_Marks(Table &a), ShowMarks(Table &a), Average(Table &a);
-int(*Funcs[])(Table &) = { nullptr, Add, Find, Remove, ShowAll, Add_Student, ShowStudents, Add_Marks, ShowMarks, Average };
+int Add(Table &), Find(Table &), Remove(Table &), ShowAll(Table &), Add_Student(Table &), ShowStudents(Table &), Add_Marks(Table &a), ShowMarks(Table &a), Average(Table &a), File_out(Table &a);
+int(*Funcs[])(Table &) = { nullptr, Add, Find, Remove, ShowAll, Add_Student, ShowStudents, Add_Marks, ShowMarks, Average,  File_out };
 const int Num = sizeof(Menu) / sizeof(Menu[0]);
 int main()
 {
