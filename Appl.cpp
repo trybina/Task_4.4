@@ -324,5 +324,29 @@ int Average(Table &a)
 	std::cout << std::endl;
 	return 0;
 }
+int File_out(Table &a)
+{
+	std::ofstream fout("1.txt", std::ios_base::out);
+	std::map <std::string, Group>::iterator it;
+	for (it = a.begin1(); it != a.end1(); ++it)
+	{
+		fout << it->second << "\n";
+		fout << "List of students:";
+		std::multiset <Students::Student*, comp> sts = (*it).second.getS();
+		for (auto z : sts)
+		{
+			fout << (*z) << "\n";
+			std::map <std::string, int> p = (*z).get_marks();
+			fout << "List of marks:" << "\n";
+			for (auto k : p)
+				fout << k.first << " - " << k.second << "\n";
+			fout << "\n";
 
+		}
+		fout << "\n";
+	}
+	fout.close();
+	std::cout << "Ok"<< std::endl;
+	return 0;
+}
 
