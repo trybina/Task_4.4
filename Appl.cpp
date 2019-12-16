@@ -3,19 +3,22 @@
 #include "Table1.h"
 #include "Student.h"
 #include <iterator>
+#include <fstream>
+#include <set>
+
 
 using namespace Students;
 using namespace Prog7;
 const std::string Names[] = { "Unknown", "Small", "Big" };
 const std::string Menu[] = { "1. Add a group", "2. Find a group",
-"3. Remove", "4. Show all", "5. Add student", "6. ShowStudents", "7. Add_Marks", "8. ShowMarks", "9. Average",
+"3. Remove", "4. Show all", "5. Add student", "6. ShowStudents", "7. Add_Marks", "8. ShowMarks", "9. Average", "10. Print", "11. File_in", "12. File_out",
  "0. Quit" },
 
 	Choice = "Make your choice",
 	Msg = "You are wrong; repeate please";
 int Answer(const std::string alt[], int n);
-int Add(Table &), Find(Table &), Remove(Table &), ShowAll(Table &), Add_Student(Table &), ShowStudents(Table &), Add_Marks(Table &a), ShowMarks(Table &a), Average(Table &a);
-int(*Funcs[])(Table &) = { nullptr, Add, Find, Remove, ShowAll, Add_Student, ShowStudents, Add_Marks, ShowMarks, Average };
+int Add(Table &), Find(Table &), Remove(Table &), ShowAll(Table &), Add_Student(Table &), ShowStudents(Table &), Add_Marks(Table &a), ShowMarks(Table &a), Average(Table &a), Print(Table &a), File_in(Table &a), File_out(Table &a);
+int(*Funcs[])(Table &) = { nullptr, Add, Find, Remove, ShowAll, Add_Student, ShowStudents, Add_Marks, ShowMarks, Average, Print, File_in, File_out };
 const int Num = sizeof(Menu) / sizeof(Menu[0]);
 int main()
 {
@@ -24,7 +27,6 @@ int main()
 	try {
 		while (ind = Answer(Menu, Num))
 			Funcs[ind](ar);
-
 		std::cout << "That's all. Buy!" << std::endl;
 	}
 	catch (const std::exception &er)
@@ -179,8 +181,8 @@ int ShowAll(Table &a)
 			for (auto k : p)
 				std::cout << k.first << " - " << k.second << std::endl;
 			std::cout << std::endl;
-
 		}
+		std::cout << std::endl;
 		std::cout << std::endl;
 	}
 	return 0;
@@ -324,29 +326,158 @@ int Average(Table &a)
 	std::cout << std::endl;
 	return 0;
 }
-int File_out(Table &a)
+
+int Print(Table &a)
 {
 	std::ofstream fout("1.txt", std::ios_base::out);
-	std::map <std::string, Group>::iterator it;
-	for (it = a.begin1(); it != a.end1(); ++it)
+	if (fout.is_open())
 	{
-		fout << it->second << "\n";
-		fout << "List of students:";
-		std::multiset <Students::Student*, comp> sts = (*it).second.getS();
-		for (auto z : sts)
+		std::map <std::string, Group>::iterator it;
+		for (it = a.begin1(); it != a.end1(); ++it)
 		{
-			fout << (*z) << "\n";
-			std::map <std::string, int> p = (*z).get_marks();
-			fout << "List of marks:" << "\n";
-			for (auto k : p)
-				fout << k.first << " - " << k.second << "\n";
-			fout << "\n";
+			fout << it->second << "\n";
+			fout << "List of students:" << "\n";
+			std::multiset <Students::Student*, comp> sts = (*it).second.getS();
+			for (auto z : sts)
+			{
+				fout << (*z) << "\n";
+				std::map <std::string, int> p = (*z).get_marks();
+				fout << "List of marks:" << "\n";
+				for (auto k : p)
+					fout << k.first << " - " << k.second << "\n";
+				fout << "\n";
 
+			}
+			fout << "\n";
 		}
-		fout << "\n";
+		fout.close();
+		std::cout << "Ok" << std::endl;
 	}
-	fout.close();
-	std::cout << "Ok"<< std::endl;
+	else
+		std::cerr << "cannot open file\n";
 	return 0;
 }
 
+int File_in(Table &a)
+{
+	std::ofstream fout("3.txt", std::ios_base::out);
+	if (fout.is_open())
+	{
+		std::map <std::string, Group>::iterator it;
+		Small s;
+		Big b;
+		int r = 0;
+		for (auto j : a)
+		{
+			r++;
+		}
+		fout << r << "\n";
+		for (it = a.begin1(); it != a.end1(); ++it)
+		{
+			fout << it->second.getI() << " " << it->second.getM() << " " << it->second.getT() << "\n";
+			std::multiset <Students::Student*, comp> sts = (*it).second.getS();
+			int y = 0;
+			for (auto i : sts)
+			{
+				y++;
+			}
+			fout << y << "\n";
+			for (auto z : sts)
+			{
+				if (it->second.getT() == 1)
+				{
+					fout << (*z).getFN() << " " << (*z).getN() << " " << (*z).getK() << "\n";
+					std::map <std::string, int> p = (*z).get_marks();
+					for (auto k : p)
+						fout << k.first << " " << k.second << "\n";
+					fout << "\n";
+				}
+				else
+				{
+					fout << (*z).getFN() << " " << (*z).getN() << " " << (*z).getW() << " " << (*z).getPL() << " " << (*z).getM() << " " << (*z).getK() << "\n";
+					std::map <std::string, int> p = (*z).get_marks();
+					for (auto k : p)
+						fout << k.first << " " << k.second << "\n";
+					fout << "\n";
+				}
+			}
+			fout << "\n";
+		}
+		fout.close();
+        std::cout << "Ok" << std::endl;
+	}
+	else
+		std::cerr << "cannot open file\n";
+	return 0;
+}
+
+int File_out(Table &a)
+{
+	std::ifstream fin("3.txt", std::ios_base::in);
+	std::map <std::string, Group>::iterator it;
+	std::string ind;
+	int max, type, r, y;
+	if (fin.is_open())
+	{
+		fin >> r;
+		while (r != 0)
+		{
+			fin >> ind;
+			fin.seekg(1, std::ios::cur);
+			fin >> max;
+			fin.seekg(1, std::ios::cur);
+			fin >> type;
+			a.insert(ind, Group(ind, max, type));
+			fin >> y;
+			std::map <std::string, Group>::iterator it;
+			it = a.find1(ind);
+			while (y != 0)
+			{
+				int k;
+				Student *ptr1 = nullptr;
+				Small s;
+				Big b;
+				if (((*it).second).getT() == 1)
+				{
+					ptr1 = &s;
+					fin >> (*ptr1);
+					fin.seekg(1, std::ios::cur);
+					bool res1 = ((*it).second).add_student(*ptr1);
+					fin >> k;
+				}
+				else
+				{
+					ptr1 = &b;
+					fin >> (*ptr1);
+					fin.seekg(1, std::ios::cur);
+					bool res2 = ((*it).second).add_student(*ptr1);
+					fin >> k;
+				}
+
+				std::string f_name = (*ptr1).getFN();
+				std::string name = (*ptr1).getN();
+				std::multiset <Students::Student*, comp>::iterator it1;
+				it1 = (*it).second.get_student(f_name, name);
+				int q = (*it).second.getM();
+				std::string sub;
+				int m;
+				while (k != 0)
+				{
+					fin >> sub;
+					fin.seekg(1, std::ios::cur);
+					fin >> m;
+					fin.seekg(1, std::ios::cur);
+					(*it1)->add_marks(sub, m, q);
+					k--;
+				}
+				y--;
+			}
+			r--;
+		}
+		std::cout << "Ok" << std::endl;
+        fin.close();
+	}
+	else
+	std::cerr << "cannot open file\n";
+	return 0;
+}
